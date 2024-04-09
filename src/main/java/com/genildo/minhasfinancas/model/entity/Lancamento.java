@@ -1,5 +1,7 @@
 package com.genildo.minhasfinancas.model.entity;
 
+import com.genildo.minhasfinancas.model.enums.StatusLancamento;
+import com.genildo.minhasfinancas.model.enums.TipoLancamento;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +11,6 @@ import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Entity
 @Table (name = "lancamento", schema = "financas")
