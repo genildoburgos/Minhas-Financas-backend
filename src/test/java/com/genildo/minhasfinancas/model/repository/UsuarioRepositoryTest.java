@@ -29,4 +29,16 @@ public class UsuarioRepositoryTest {
 //        Assertions.assertThat(result).isTrue();
          Assertions.assertTrue(result);
     }
+
+    @Test
+    public void deveRetornarFalsoQuandoNaoHouverUsuarioCadastradoComOEmnail(){
+        //cenario
+        repository.deleteAll();
+
+        // açao
+        boolean result = repository.existsByEmail("usuario@email.com");
+
+        //verificar
+        Assertions.assertFalse(result);
+    }
 }
