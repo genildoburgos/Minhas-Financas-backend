@@ -34,6 +34,16 @@ public class LancamentoResource {
         }
 
     }
+    @DeleteMapping("{id}")
+    public ResponseEntity deletar (@PathVariable("id") Long id){
+
+
+        return service.obterPorId(id).map( entidade ->{
+            service.deletar(entidade);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }).orElseGet(()->
+                new ResponseEntity("Lancamento não encontrado na base de dados.", HttpStatus.BAD_REQUEST));
+    }
 
     @PutMapping("{id}")
     public ResponseEntity atualizar(@PathVariable("id") Long id, @RequestBody LancamentoDTO dto  ){
