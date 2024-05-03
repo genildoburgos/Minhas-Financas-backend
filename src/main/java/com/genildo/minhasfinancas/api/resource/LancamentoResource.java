@@ -8,20 +8,55 @@ import com.genildo.minhasfinancas.model.enums.StatusLancamento;
 import com.genildo.minhasfinancas.model.enums.TipoLancamento;
 import com.genildo.minhasfinancas.service.LancamentoService;
 import com.genildo.minhasfinancas.service.UsuarioService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/lancamentos")
+@RequiredArgsConstructor
 public class LancamentoResource {
     private final LancamentoService service;
-    private UsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
 
-    public LancamentoResource(LancamentoService service) {
-        this.service = service;
+//    public LancamentoResource(LancamentoService service, UsuarioService usuarioService) {
+//        this.service = service;
+//        this.usuarioService = usuarioService;
+//    }
+
+    @GetMapping("/hello")
+    public ResponseEntity<String> helloWorld() {
+        return ResponseEntity.ok("hello world");
     }
+
+    @GetMapping
+    public ResponseEntity buscar(
+            @RequestParam(value = "descricao", required = false) String descricao,
+            @RequestParam(value = "mes", required = false) Integer mes,
+            @RequestParam(value = "ano", required = false) Integer ano,
+            @RequestParam("usuario") Long idUsuario
+    ){
+        Lancamento lancamentoFiltro = new Lancamento();
+        lancamentoFiltro.setDescricao(descricao);
+        lancamentoFiltro.setMes(mes);
+        lancamentoFiltro.setAno(ano);
+
+        Optional<Usuario> usuarioOptional = usuarioService.obterPorId(idUsuario);
+        if(usuarioOptional.isPresent()) {
+            lancamentoFiltro.setUsuario(usuarioOptional.get());
+        } else {
+            return ResponseEntity.badRequest().body("Não foi possível realizar a consulta. Usuário não encontrado para o ID informado");
+        }
+
+        List<Lancamento> lancamentos = service.buscar(lancamentoFiltro);
+        return ResponseEntity.ok(lancamentos);
+    }
+
 
     @PostMapping
     public ResponseEntity salvar (@RequestBody LancamentoDTO dto){
@@ -64,20 +99,27 @@ public class LancamentoResource {
 
     private Lancamento converter(LancamentoDTO dto){
         Lancamento lancamento = new Lancamento();
-        lancamento.setId(dto.getId());
+        lancamento.setId(dto.getIdUsuario());
         lancamento.setDescricao(dto.getDescricao());
         lancamento.setAno(dto.getAno());
         lancamento.setMes(dto.getMes());
         lancamento.setValor(dto.getValor());
 
         Usuario usuario = usuarioService
-                .obterPorId(dto.getId())
-                .orElseThrow(()-> new RegraNegocioException("Usuario não encontrado para o id encontrado."));
+                .obterPorId(dto.getIdUsuario())
+                .orElseThrow(() -> new RegraNegocioException("Usuario não encontrado para o id encontrado."));
 
         lancamento.setUsuario(usuario);
-        lancamento.setTipo(TipoLancamento.valueOf(dto.getTipo()));
-        lancamento.setStatus(StatusLancamento.valueOf(dto.getStatus()));
+
+        if(dto.getTipo() != null){
+            lancamento.setTipo(TipoLancamento.valueOf(dto.getTipo()));
+        }
+
+        if(dto.getStatus() != null){
+            lancamento.setStatus(StatusLancamento.valueOf(dto.getStatus()));
+        }
         return lancamento;
     }
+
 
 }

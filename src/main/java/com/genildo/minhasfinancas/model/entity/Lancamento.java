@@ -33,16 +33,8 @@ public class Lancamento {
     @Column ( name = "ano")
     private Integer ano;
 
-    @ManyToOne
-    @JoinColumn ( name = "id_usuario")
-    private Usuario usuario;
-
     @Column ( name = "valor")
     private BigDecimal valor;
-
-    @Column (name = "data_cadastro")
-    @Convert ( converter = Jsr310JpaConverters.LocalDateConverter.class)
-    private LocalDate dataCadastro;
 
     @Column ( name = "tipo")
     @Enumerated (value = EnumType.STRING )
@@ -51,4 +43,17 @@ public class Lancamento {
     @Column ( name = "status")
     @Enumerated (value = EnumType.STRING)
     private StatusLancamento status;
+
+    @ManyToOne
+    @JoinColumn ( name = "id_usuario")
+    private Usuario usuario;
+
+    @Column (name = "data_cadastro")
+    @Convert ( converter = Jsr310JpaConverters.LocalDateConverter.class)
+    private LocalDate dataCadastro;
+
+    @PrePersist
+    public void prePersist() {
+        this.dataCadastro = LocalDate.now();
+    }
 }

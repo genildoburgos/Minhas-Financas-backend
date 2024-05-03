@@ -5,6 +5,7 @@ import com.genildo.minhasfinancas.exception.ErroAutenticaçao;
 import com.genildo.minhasfinancas.exception.RegraNegocioException;
 import com.genildo.minhasfinancas.model.entity.Usuario;
 import com.genildo.minhasfinancas.service.UsuarioService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -14,13 +15,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 public class UsuarioResource {
 
-    private UsuarioService service;
+    private  final UsuarioService service;
 
-    public UsuarioResource(UsuarioService service) {
-        this.service = service;
-    }
+//    public UsuarioResource(UsuarioService service) {
+//        this.service = service;
+//    }
 
     @PostMapping("/api/usuarios/autenticar")
     public ResponseEntity autenticar( @RequestBody UsuarioDTO dto){

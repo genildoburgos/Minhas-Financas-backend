@@ -6,21 +6,23 @@ import com.genildo.minhasfinancas.model.entity.Usuario;
 import com.genildo.minhasfinancas.model.repository.UsuarioRepository;
 import com.genildo.minhasfinancas.service.UsuarioService;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UsuarioServiceImpl implements UsuarioService {
 
-    private UsuarioRepository repository;
+    private final UsuarioRepository repository;
 
-    @Autowired
-    public UsuarioServiceImpl(UsuarioRepository repository) {
-        super();
-        this.repository = repository;
-    }
+//    @Autowired
+//    public UsuarioServiceImpl(UsuarioRepository repository) {
+//        super();
+//        this.repository = repository;
+//    }
 
     @Override
     public Usuario autenticar(String email, String senha) {
